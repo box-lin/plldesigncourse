@@ -1,0 +1,14 @@
+ghc --make <<文件名.hs>>
+    ：进行编译创建.exe运行环境
+    ：.\<<文件名>>  可直接运行
+
+ghci <<文件名.hs>> 
+    : 输入main直接运行
+
+
+    :r  --> reload
+    :l <<name.hs>>  --> new loads 
+
+    :q --> quit
+    :t --> check the type
+    
