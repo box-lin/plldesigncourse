@@ -68,3 +68,6 @@ count  e lst = foldr (\x acc -> if e == x then acc + 1 else acc ) 0 lst
 copyList2 :: [a] -> [a]
 copyList2 xL = reverse (foldl(\xs x -> x:xs) [] xL)
 
+copyList1 :: [a] -> [a]
+copyList1 xL = foldr (\x acc -> x:acc) [] xL
+

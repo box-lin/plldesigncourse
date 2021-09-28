@@ -30,18 +30,29 @@ mergeN lst = foldl merge2 [] lst
 -- 2
 {- (a) count -}
 
-
+count :: Eq a => a -> [a] -> Int
+count val list = length(filter(\x -> x == val) list)
 
 
 {- (b) histogram  -}
-
-
-
+histogram :: Eq a => [a] -> [(a, Int)]
+histogram lst = foldr (\x acc -> if x `elem` acc then acc else x:acc) [] (map (\x->(x, count x lst)) lst)
+     
+-- map (\x->(x, count x lst)) lst   返回全tuple带有count
+-- unique lst = foldr (\x acc -> if x `elem` acc then acc else x:acc) [] lst   利用foldr进行删除操作
 
 -- 3                
 {- (a) concatAll -}
+concatAll::[[String]] ->String
+-- concatAll list = foldr(\x acc -> (toString x) ++acc) "" list
+--                  where 
+--                       toString sublist = foldr (\x acc -> x++acc) "" sublist 
 
 
+concatAll list = foldr(\x acc -> x++acc) "" (goodlist list)
+                 where 
+                      goodlist lst = map(\x-> toString x) lst
+                      toString sublist = foldr (\x acc -> x++acc) "" sublist 
 
 
 {- (b) concat2Either -}               
