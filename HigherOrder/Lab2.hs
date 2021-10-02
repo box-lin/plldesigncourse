@@ -78,14 +78,15 @@ concat2Either list = foldr stringHelper (AString "") (goodlist list ) -- This wi
 --                      where 
 --                           toString (AString theString) = theString
 
+concat2Str :: [[AnEither]] -> String
 concat2Str list = concatAll (map toString list)   -- now it is a nested list with string, we can use the function concatAll that we previously define to concat them up.
                   where 
                      toString sublist = map each sublist  --map each sublist to string type
                      each (AString s1) = s1      
                      each (AnInt n1) = show n1
+
         
 
- 
 
 data Op = Add | Sub | Mul | Pow
           deriving (Show, Read, Eq)
