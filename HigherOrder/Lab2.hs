@@ -1,6 +1,6 @@
 -- CptS 355 - Lab 2 (Haskell) - Fall 2021
--- Name: 
--- Collaborated with: 
+-- Name: Boxiang Lin
+-- Collaborated with: N/A
 
 module Lab2
      where
@@ -29,27 +29,18 @@ mergeN lst = foldl merge2 [] lst
 
 -- 2
 {- (a) count -}
-
 count :: Eq a => a -> [a] -> Int
 count val list = length(filter(\x -> x == val) list)
 
 
 {- (b) histogram  -}
--- Map will return a list with elements of (sublist count)
+-- Map will return a list with elements of (sublist, count)
 -- Use foldr to disregard those duplicate sublist.
 histogram :: Eq a => [a] -> [(a, Int)]
-histogram lst = foldr (\x acc -> if x `elem` acc then acc else x:acc) [] (map (\x->(x, count x lst)) lst)
-     
--- map (\x->(x, count x lst)) lst   返回全tuple带有count
--- unique lst = foldr (\x acc -> if x `elem` acc then acc else x:acc) [] lst   利用foldr进行删除操作
+histogram lst = foldr (\x acc -> if x `elem` acc then acc else x:acc) [] (map (\x->(x, count x lst)) lst)   
 
 -- 3                
 {- (a) concatAll -}
--- concatAll list = foldr(\x acc -> (toString x) ++acc) "" list
---                  where 
---                       toString sublist = foldr (\x acc -> x++acc) "" sublist 
-
-
 concatAll::[[String]] ->String
 concatAll list = foldr(\x acc -> x++acc) "" (goodlist list) --Concate the whole list.
                  where 
@@ -73,11 +64,6 @@ concat2Either list = foldr stringHelper (AString "") (goodlist list ) -- This wi
 
 -- 4      
 {-  concat2Str -}               
--- concat2Str :: [[AnEither]] -> String
--- concat2Str list = toString (concat2Either list) -- The list got computed concate by previous funcion, now we just need to return its String.
---                      where 
---                           toString (AString theString) = theString
-
 concat2Str :: [[AnEither]] -> String
 concat2Str list = concatAll (map toString list)   -- now it is a nested list with string, we can use the function concatAll that we previously define to concat them up.
                   where 
@@ -87,13 +73,8 @@ concat2Str list = concatAll (map toString list)   -- now it is a nested list wit
 
         
 
-
 data Op = Add | Sub | Mul | Pow
           deriving (Show, Read, Eq)
-
-
-
-
 
 evaluate:: Op -> Int -> Int -> Int
 evaluate Add x y =  x+y
@@ -104,22 +85,26 @@ evaluate Pow x y = x^y
 data ExprTree a = ELEAF a | ENODE Op (ExprTree a) (ExprTree a)
                   deriving (Show, Read, Eq)
 
-
 -- 5 
 {- evaluateTree -}
-
-
+evaluateTree (ELEAF v) = v
+evaluateTree (ENODE op t1 t2) = evaluate op (evaluateTree t1) (evaluateTree t2) -- call the evaluate and deliver the op and x y as where the nodes/leaves bubble up to do the operation.
 
 -- 6
 {- printInfix -}
-
-
+printInfix :: Show a => ExprTree a -> String
+printInfix (ELEAF v) = show v
+printInfix (ENODE op t1 t2) =  "("++ (printInfix t1)++" `"++(show op)++"` "++(printInfix t2)++")" --print left sub trees then op then right sub trees
 
 --7
 {- createRTree -}
 data ResultTree a  = RLEAF a | RNODE a (ResultTree a) (ResultTree a)
                      deriving (Show, Read, Eq)
 
+createRTree :: ExprTree Int   -> ResultTree Int
+createRTree (ELEAF v) = (RLEAF v)
+createRTree (ENODE op t1 t2) = RNODE v (createRTree t1) (createRTree t2)
+                               where v = evaluate op (evaluateTree t1) (evaluateTree t2)
 
 
 
