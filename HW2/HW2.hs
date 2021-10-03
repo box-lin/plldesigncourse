@@ -6,8 +6,8 @@ module HW2
 groupbyNTail :: [a] -> Int -> [[a]]
 groupbyNTail list n = helper list n [] []
                       where
-                           helper [] n acc buf = (reverse buf):acc  -- buf get cons to acc list in case not perfectly reach n size and return the acc list when backtrack.
-                           helper (x:xs) n acc buf | (length buf) >= n = reverse (helper xs n ((reverse buf): acc) [x]) --buf get cons to acc during recursion.
+                           helper [] n acc buf = reverse (reverse buf:acc)  -- buf get cons to acc list in case not perfectly reach n size and return the acc list when backtrack.
+                           helper (x:xs) n acc buf | (length buf) >= n = (helper xs n ((reverse buf): acc) [x]) --buf get cons to acc during recursion.
                                                    | otherwise = helper xs n acc (x:buf) --accumulate the buf list.
 
 -----------------------------------------------------------
@@ -35,11 +35,23 @@ stopsAt target routes = foldr(\x acc -> if (isElem x) then (theBus x):acc else a
 --define the Timestamp datatype
 data Timestamp =  DATE (Int,Int,Int) |  DATETIME (Int,Int,Int,Int,Int) 
                   deriving (Show, Eq)
-
 {- (a)  isBigger - 15% -}
+isBigger :: Timestamp -> Timestamp -> Bool
+isBigger time1 time2 = helper time1 time2 
+         where   
+               helper (DATE (x1, y1, z1)) (DATE (x2, y2, z2)) = isGreater x1 x2 y1 y2 z1 z2
+               helper (DATE (x1, y1, z1)) (DATETIME (x2,y2,z2,h2,m2)) = isGreater x1 x2 y1 y2 z1 z2
+               helper (DATETIME (x1,y1,z1,h1,m1))  (DATE (x2, y2, z2)) = isGreater x1 x2 y1 y2 z1 z2
+               helper (DATETIME (x1,y1,z1,h1,m1)) (DATETIME (x2,y2,z2,h2,m2)) = isEaxctGreater x1 x2 y1 y2 z1 z2 h1 h2 m1 m2 
+               isGreater x1 x2 y1 y2 z1 z2 = if dateSum x1 y1 z1 <= dateSum x2 y2 z2 then False else True 
+               isEaxctGreater x1 x2 y1 y2 z1 z2 h1 h2 m1 m2 = if dateTimeSum x1 y1 z1 h1 m1 <= dateTimeSum x2 y2 z2 h2 m2 then False else True
+               dateSum x y z = x*30 + y + z*365    --(month day year) to unit of days
+               dateTimeSum x y z h m = x*43200+ y*1440 + z*518400 + h*60 + m  --(month day year hour min) to unit of minutes
+
 
 {- (b) applyRange - 10% -}
-
+applyRange :: (Timestamp, Timestamp) -> [Timestamp] -> [Timestamp]
+applyRange (t1,t2) list = filter (\x-> (isBigger x t1) && (isBigger t2 x)) list
 
 -----------------------------------------------------------
 {-4 - foldTree, createRTree, fastSearch  - 35%-}
@@ -53,14 +65,37 @@ data RTree a = RLEAF a | RNODE a (a,a) (RTree a) (RTree a)
 
 {- (a) foldTree - 8% -}
 
+foldTree :: (t -> t -> t) -> Tree t -> t
+foldTree op tree = helper op tree
+                   where 
+                        helper op (LEAF v) = v
+                        helper op (NODE a t1 t2) = op a (op (helper op t1) (helper op t2))
+
+
 {- (b) createRTree - 12% -}
+createRTree :: Ord a => Tree a -> RTree a
+createRTree (LEAF v) = RLEAF v
+createRTree (NODE a t1 t2) = RNODE a (min (theMin t1 t2) a, max (theMax t1 t2) a) (createRTree t1) (createRTree t2) --min, max have to also compare the a, because we are accessing the subtrees
+                           where 
+                                theMin t1 t2 = min (foldTree min t1) (foldTree min t2)
+                                theMax t1 t2 = max (foldTree max t1) (foldTree max t2) 
 
 {- (c) fastSearch - 15% -}
+fastSearch::Ord t => RTree t->t->[([Char],t)]
+fastSearch tree target = helper tree []
+                         where 
+                            helper (RLEAF v) acc = ("leaf", v):acc
+                            helper (RNODE a (x,y) t1 t2) acc = if target >= x && target <= y 
+                                                               then ("node", a):acc ++ (helper t1 acc) ++ (helper t2 acc)
+                                                               else ("node", a):acc -- if outside the range we stop and add the current node           
 
 -------------------------------------------------------------------
 
 {- Tree Examples 5% -}
 -- include your tree examples in the test file. 
+
+
+
 
 {-Testing your tree functions - 5%-}
 

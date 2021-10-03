@@ -42,10 +42,11 @@ histogram lst = foldr (\x acc -> if x `elem` acc then acc else x:acc) [] (map (\
 -- 3                
 {- (a) concatAll -}
 concatAll::[[String]] ->String
-concatAll list = foldr(\x acc -> x++acc) "" (goodlist list) --Concate the whole list.
+concatAll list = foldr(\x acc -> x++acc) "" (goodlist list) --Concat the whole list.
                  where 
                       goodlist lst = map(\x-> toString x) lst -- Good list with all sublists concated
                       toString sublist = foldr (\x acc -> x++acc) "" sublist  -- Concate the sublists 
+
 
 
 {- (b) concat2Either -}               
@@ -62,6 +63,7 @@ concat2Either list = foldr stringHelper (AString "") (goodlist list ) -- This wi
                           stringHelper (AnInt n1) (AString s1) = AString (show n1 ++ s1)
                           stringHelper (AnInt n1) (AnInt n2) = AString (show n1 ++ show n2)
 
+
 -- 4      
 {-  concat2Str -}               
 concat2Str :: [[AnEither]] -> String
@@ -71,7 +73,6 @@ concat2Str list = concatAll (map toString list)   -- now it is a nested list wit
                      each (AString s1) = s1      
                      each (AnInt n1) = show n1
 
-        
 
 data Op = Add | Sub | Mul | Pow
           deriving (Show, Read, Eq)

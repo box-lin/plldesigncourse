@@ -17,6 +17,17 @@ p3a_test6 = TestCase (assertEqual "isBigger-test6" (True) (isBigger (DATE (6,10,
 p3a_test7 = TestCase (assertEqual "isBigger-test7" (False) (isBigger (DATE (6,10,2021)) (DATETIME (6,10,2021,11,10)) ))
 p3a_test8 = TestCase (assertEqual "isBigger-test8" (False) (isBigger (DATETIME (6,10,2021,11,10)) (DATE (6,10,2021)) ))
 
+---Additional Tests----
+p3a_test9 = TestCase (assertEqual "isBigger-test9" (True) (isBigger (DATE (0,0,1)) (DATE (1,0,0)) ))
+p3a_test10 = TestCase (assertEqual "isBigger-test10" (True) (isBigger (DATE (1,0,0)) (DATE (0,1,0)) ))
+
+p3a_test11 = TestCase (assertEqual "isBigger-test11" (False) (isBigger (DATETIME (0,0,0,0,1)) (DATETIME (0,0,0,0,2)) ))
+p3a_test12 = TestCase (assertEqual "isBigger-test12" (True) (isBigger (DATETIME (0,0,0,1,0)) (DATETIME (0,0,0,0,2)) ))
+
+p3a_test13 = TestCase (assertEqual "isBigger-test13" (False) (isBigger (DATETIME (2,2,2,1331232313121313131,0)) (DATE (2,2,2)) ))
+-----------------------
+
+
 datelist = [DATE(5,28,2021), DATETIME(6,1,2021,14,15), DATE(6,22,2021), DATE(6,1,2021), DATETIME(6,21,2021,15,20), 
             DATETIME(5,21,2020,14,40), DATE (5,20,2021), DATETIME (6,9,2021,19,30), DATETIME (6,10,2021,11,10)]
 
@@ -35,7 +46,13 @@ tests = TestList [ TestLabel "Problem 3a - test1 " p3a_test1,
                    TestLabel "Problem 3a - test5 " p3a_test5, 
                    TestLabel "Problem 3a - test6 " p3a_test6, 
                    TestLabel "Problem 3a - test7 " p3a_test7, 
-                   TestLabel "Problem 3a - test8 " p3a_test8, 
+                   TestLabel "Problem 3a - test8 " p3a_test8,
+                   TestLabel "Problem 3a - test8 " p3a_test9,
+                   TestLabel "Problem 3a - test8 " p3a_test10,
+                   TestLabel "Problem 3a - test8 " p3a_test11,
+                   TestLabel "Problem 3a - test8 " p3a_test12,
+                   TestLabel "Problem 3a - test8 " p3a_test13,
+
                    TestLabel "Problem 3b - test1 " p3b_test1,
                    TestLabel "Problem 3b - test2 " p3b_test2                   
                  ] 
