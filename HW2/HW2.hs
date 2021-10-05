@@ -17,6 +17,7 @@ groupbyNTail list n = helper list n [] []
 
 {- (a)  elemAll - 10%-}
 -- please don't include the myCatsLog list in your solution file. 
+elemAll :: (Foldable t1, Foldable t2, Eq a) => t1 a -> t2 a -> Bool
 elemAll l1 l2 = if False `elem` (boolean l1) then False else True --if there is one false we return false, else true;
                 where -- Check if all element in l1 elem in l2, can use foldr to generate a bool list that indicate each element exsitence in l2
                      boolean list = foldr (\x acc -> if x `elem` l2 then True:acc else False:acc) [] l1
@@ -93,10 +94,23 @@ fastSearch tree target = helper tree []
 
 {- Tree Examples 5% -}
 -- include your tree examples in the test file. 
+--mybst :: Tree Integer
+myBST :: Tree Integer
+myBST = NODE 7 (NODE 3 (NODE 1 (LEAF 0) (LEAF 2)) 
+                       (NODE 5 (LEAF 4) (LEAF 6))
+               ) 
+               (NODE 12 (NODE 9 (LEAF 8) (LEAF 11)) 
+                        (NODE 14 (LEAF 13) (LEAF 15))
+               )
 
-
-
+myBT :: Tree String
+myBT = NODE "A" (NODE "B" (NODE "D" (LEAF "H") (LEAF "I")) 
+                          (NODE "E" (LEAF "J") (LEAF "K"))
+                )
+                (NODE "C" (NODE "F" (LEAF "L") (LEAF "M")) 
+                          (NODE "G" (LEAF "N") (LEAF "O"))
+                )
 
 {-Testing your tree functions - 5%-}
-
+-- The Q5 tree get tested by Q4(a,b,c) as additional tests.
 
