@@ -1,3 +1,9 @@
+{-
+Name: Boxiang Lin
+Collaborate: N/A
+CPT_S 355 HW2 Haskell
+-}
+
 module HW2
      where
 
@@ -112,5 +118,6 @@ myBT = NODE "A" (NODE "B" (NODE "D" (LEAF "H") (LEAF "I"))
                 )
 
 {-Testing your tree functions - 5%-}
+
 -- The Q5 tree get tested by Q4(a,b,c) as additional tests.
 

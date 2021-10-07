@@ -1,6 +1,12 @@
 {-Haskell HW2 HUnit test cases
  Please add at least 2 additional tests for problems 2(a,b) and 4(a,b,c)-}
 
+{-
+Name: Boxiang Lin
+Collaborate: N/A
+CPT_S 355 HW2 Haskell
+-}
+
 module HW2SampleTests
     where
 
