@@ -24,7 +24,8 @@ merge2Tail l1 l2 = helper l1 l2 []
 
 {- (c) mergeN -}
 mergeN :: [[a]] -> [a]
-mergeN lst = foldl merge2 [] lst
+mergeN lst = foldl merge2 [] lst  
+ 
 
 
 -- 2
@@ -38,6 +39,7 @@ count val list = length(filter(\x -> x == val) list)
 -- Use foldr to disregard those duplicate sublist.
 histogram :: Eq a => [a] -> [(a, Int)]
 histogram lst = foldr (\x acc -> if x `elem` acc then acc else x:acc) [] (map (\x->(x, count x lst)) lst)   
+
 
 -- 3                
 {- (a) concatAll -}
@@ -59,9 +61,9 @@ concat2Either list = foldr stringHelper (AString "") (goodlist list ) -- This wi
                           goodlist list = map toString list -- Now this is a goodlist with each sublist x in L has only one AString data
                           toString sublist = foldr stringHelper (AString "") sublist -- for each sublist x in L, we concate all data with AString to one AString data. 
                           stringHelper (AString s1) (AString s2) = AString (s1++s2)
-                          stringHelper (AString s1) (AnInt n1) = AString (s1 ++ show n1)
+                          --stringHelper (AString s1) (AnInt n1) = AString (s1 ++ show n1)
                           stringHelper (AnInt n1) (AString s1) = AString (show n1 ++ s1)
-                          stringHelper (AnInt n1) (AnInt n2) = AString (show n1 ++ show n2)
+                          --stringHelper (AnInt n1) (AnInt n2) = AString (show n1 ++ show n2)
 
 
 -- 4      
