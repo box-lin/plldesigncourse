@@ -20,8 +20,8 @@ def getNumCases(data, counties, months):
 def getMonthlyCases(data):
      res = {}
      counties = list(data.keys()) # Get all counties in a list
-     for k,v in data.items(): 
-          for month, val in v.items():
+     for v in data.values(): 
+          for month in v.keys():
                temp = {} # a temp dict to store {county:value, ....} after all counties processed we want it to be empty for the next round.
                for c in counties: 
                     if month in data[c]: # there might be month not in a county we will exclude it.
@@ -29,6 +29,7 @@ def getMonthlyCases(data):
                res[month] = temp 
           # not break here because each county has different range of months, we will brute force through them.
      return res
+
 
 from functools import reduce
 from typing import Iterable
@@ -39,7 +40,7 @@ def mostCases(data):
      # Using map to first get rid of months key then map again to get rid of counties key --> left with only integer values, then apply reduce
      # to sum them up and pair with month as a tuple.
      m_of_val = list(map(lambda x: (x,  reduce(lambda i,j: i+j, list(map(lambda y: d[x][y], d[x])) )  ), d)) #list of tuples (month, sum_val)
-     return max(m_of_val, key = lambda t: t[1]) #using key by lamda to get the max of second index in tuple
+     return reduce(lambda x,y : x if x[1] > y[1] else y, m_of_val) #bubble up the max
 
 ## problem 4a) searchDicts(L,k)
 def searchDicts(L,k):
@@ -78,6 +79,35 @@ def getLongest(L):
 
 
 ## problem 6 - apply2nextN 
-class apply2nextN():
-     def __init__(self,init):
+class apply2nextN:
+     def __init__(self, f, n, it):
+          self.n = n 
+          self.f = f
+          self.input= it
+          self.current = self._getNextInput()
+     
+     def _getNextInput(self):
+          try:
+               curr = next(self.input)
+          except:
+               curr = None
+          return curr
+
+     def __next__(self):
+          if self.current is None:
+               raise StopIteration
+          local_n = self.n
+          res = self.current
+          self.current = self._getNextInput()
+          while local_n > 1: 
+               local_n -= 1
+               if self.current is None:
+                    break
+               res = self.f(res, self.current)
+               self.current = self._getNextInput()
+          return res
+     
+     def __iter__(self):
+          return self
+
           

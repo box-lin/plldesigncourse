@@ -57,6 +57,13 @@ class Lab3_Q6_Tests(unittest.TestCase):
         self.assertEqual(upto100,[14, 22, 30, 38, 46, 54, 62, 70, 78, 86])
         self.assertEqual(iSequence.__next__(),94)
 
+
+    def test_apply2nextN_test4(self):
+    	#test 1
+        iSequence = apply2nextN(lambda a,b:a+b, 3, iter(range(1,3)))
+        self.assertEqual(iSequence.__next__(),3)
+
+
 if __name__ == '__main__':
     unittest.main()
 
