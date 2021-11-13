@@ -1,5 +1,7 @@
 from psItems import Value, ArrayValue, FunctionValue
-
+'''
+Boxiang Lin
+'''
 class Operators:
     def __init__(self):
         #stack variables
@@ -8,7 +10,19 @@ class Operators:
         
         #The builtin operators supported by our interpreter
         self.builtin_operators = {
-             # TO-DO in part1
+             #Arithmetic
+             "add":self.add, "sub":self.sub, "mod":self.mod, "mul":self.mul,   
+             
+             #Comparision
+             "eq":self.eq, "lt":self.lt, "gt":self.gt,
+             
+             #Array                      
+             "length":self.length, "getinterval":self.getinterval, "putinterval":self.putinterval, "aload":self.aload, "astore":self.astore, 
+             
+             #Basic
+             "dup":self.dup, "exch":self.exch, "pop":self.pop, "copy":self.copy, "clear":self.clear, "roll":self.roll, "dict":self.psDict, "def":self.psDef,
+             "begin":self.begin, "end":self.end, "stack":self.stack, "count":self.count
+             
              # include the key value pairs where the keys are the PostScrip opertor names and the values are the function values that implement that operator. 
              # Make sure **not to call the functions** 
         }
@@ -197,6 +211,9 @@ class Operators:
             interval = array.value[start: start+count]
             self.opPush(ArrayValue(interval))
         else:
+            self.opPush(array)
+            self.opPush(start)
+            self.opPush(count)
             print("Error: out of range index occured or non ArrayValue type in the stack")
 
     """ 
@@ -211,6 +228,9 @@ class Operators:
         if start + (len(interval) - 1) < len(array):
             array[start:start+len(interval)] = interval
         else:
+            self.opPush(array)
+            self.opPush(start)
+            self.opPush(interval)
             print("Error: out of range index occured.")
             
 
