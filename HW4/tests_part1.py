@@ -27,11 +27,13 @@ class HW4Sampletests_part1(unittest.TestCase):
         self.psstacks.dictPush({'/a':arrayV})
         self.assertTrue(self.psstacks.lookup("a") is arrayV)
         self.assertEqual(self.psstacks.lookup("a").value,arrayV.value)
+        
 
     def test_define1(self):
         self.psstacks.dictPush({})
         self.psstacks.define("/n1", 4)
         self.assertEqual(self.psstacks.lookup("n1"),4)
+        self.assertEqual(len(self.psstacks.dictstack),1)
 
     def test_define2(self):
         self.psstacks.dictPush({})
@@ -39,7 +41,9 @@ class HW4Sampletests_part1(unittest.TestCase):
         self.psstacks.define("/n1", 5)
         self.psstacks.define("/n2", 6)
         self.assertEqual(self.psstacks.lookup("n1"),5)
-        self.assertEqual(self.psstacks.lookup("n2"),6)        
+        self.assertEqual(self.psstacks.lookup("n2"),6)  
+        self.assertEqual(len(self.psstacks.dictstack),1)
+      
 
     def test_define3(self):
         self.psstacks.dictPush({})
@@ -51,6 +55,7 @@ class HW4Sampletests_part1(unittest.TestCase):
         self.psstacks.define("/n1", 6)
         self.assertEqual(self.psstacks.lookup("n1"),6)
         self.assertEqual(self.psstacks.lookup("n2"),7)    
+        self.assertEqual(len(self.psstacks.dictstack),3)
     #-----------------------------------------------------
     #Arithmatic operator tests
     def test_add(self):
