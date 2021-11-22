@@ -1,3 +1,4 @@
+from colors import BLUE, CEND, CYAN
 from psItems import Value, ArrayValue, FunctionValue
 '''
 Boxiang Lin
@@ -273,10 +274,12 @@ class Operators:
        Prints the opstack. The end of the list is the top of the stack. 
     """
     def stack(self):
-        print('---------opstack-------------')
-        print(self.opstack)
-        print('---------dicttack-------------')
-        print(self.dictstack)
+        print(CYAN+ '<<--------- opstack --------->> ')
+        print(self.opstack, CEND)
+        print()
+        print(BLUE+'<<-------- dictstack -------->>')
+        print(self.dictstack, CEND)
+
 
     """
        Copies the top element in opstack.

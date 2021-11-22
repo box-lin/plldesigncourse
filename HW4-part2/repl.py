@@ -2,11 +2,17 @@
 The code has been changed according to Postscript syntax. 
 https://creativecommons.org/licenses/by-sa/3.0/
 """
+
+'''
+Name: Boxiang Lin
+'''
+
 try:
     import readline  # history and arrow keys for CLI
 except ImportError:
     pass  # but not everyone has it
 import sys
+from colors import BOLD, CEND, OKGREEN
 
 from psParser import read
 from psOperators import Operators
@@ -25,7 +31,7 @@ if __name__ == '__main__':
     while True:
         try:
             # `input` prints the prompt, waits, and returns the user's input.
-            user_input = input('<sps> ')
+            user_input = input(BOLD + '<sps> ' + CEND)
             expr_list = read(user_input)  # READ
             for expr in expr_list:        
                 if read_only:

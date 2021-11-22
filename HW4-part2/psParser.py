@@ -2,8 +2,15 @@
 The code has been changed according to Postscript syntax. 
 https://creativecommons.org/licenses/by-sa/3.0/
 """
+
+'''
+Name: Boxiang Lin
+'''
+
+
 import string
 from buffer import Buffer
+from colors import CEND, OKGREEN
 from psItems import Literal, Array, Name, Block
 
 # Constants
@@ -114,8 +121,6 @@ def read_expr(src):
         return Array(read_block_expr(src,']'))
     elif token == '{':
         return Block(read_block_expr(src,'}'))
-    # elif is_object(token):
-    #     return token
     else:
         raise SyntaxError("'{}' is not the start of an expression".format(token))
   
@@ -130,4 +135,5 @@ def read(s):
     out = []
     while src.current() is not None:
         out.append(read_expr(src))
+    print(OKGREEN + "OUT: " + str(out) + CEND)
     return out

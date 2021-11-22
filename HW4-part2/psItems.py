@@ -3,6 +3,10 @@ The code has been changed according to Postscript syntax.
 https://creativecommons.org/licenses/by-sa/3.0/
 """
 
+'''
+Name: Boxiang Lin
+'''
+
 class Expr:
     """
     When you type input into this interpreter, it is parsed (read) into an expression. 
@@ -69,13 +73,8 @@ class Array(Expr):
     def evaluate(self,psstacks):
         psstacks.opPush('[')
         for item in self.value:
-            if isinstance(item, Literal):
-                item.evaluate(psstacks)
-            elif isinstance(item, Name):
-                item.evaluate(psstacks)
-            elif isinstance(item, Array):
-                item.evaluate(psstacks) # recursively evaluate arrays in the array
-        
+            item.evaluate(psstacks)
+
         res = []
         while psstacks.opstack[-1] != '[':
             res.append(psstacks.opPop())
@@ -208,14 +207,7 @@ class FunctionValue(Value):
 
     def apply(self, psstacks):
         for item in self.body:
-            if isinstance(item, Literal):
-                item.evaluate(psstacks)
-            elif isinstance(item, Name):
-                item.evaluate(psstacks)
-            elif isinstance(item, Array):
-                item.evaluate(psstacks)
-            elif isinstance(item, Block):
-                item.evaluate(psstacks)
+            item.evaluate(psstacks)
 
     def __str__(self):
         return '<function {}>'.format(self.body)
