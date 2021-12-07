@@ -52,7 +52,8 @@ class HW4GradingTests(unittest.TestCase):
             'test33':[3],
             'test34':[2, 3, ArrayValue([5, 3, 4]), 4],
             'test35':[12],
-            'test36':[15, ArrayValue([1]), ArrayValue([3]), ArrayValue([2])]       
+            'test36':[15, ArrayValue([1]), ArrayValue([3]), ArrayValue([2])],
+            'test37':[254]
             }
 
     def compareObjectData(self,obj1,obj2):
@@ -623,6 +624,26 @@ class HW4GradingTests(unittest.TestCase):
         for i in range(0,len(self.opstack_output[test_case])):
                 self.assertTrue(self.compareObjectData(self.psstacks.opstack[i], self.opstack_output[test_case][i]))
 
+    def test_input37(self):
+        testinput37 = """
+                        /pow2 {1 dict begin
+                        /x exch def
+                        1 x { 2 mul } repeat
+                        end } def
+                        [1 2 3 4 5 6 7] /A exch def
+                        A aload pop
+                        /n 0 def
+                        A length {pow2 n add /n exch def} repeat
+                        n
+                    """
+        test_case = 'test{}'.format(37)
+        expr_list = read(testinput37)
+        for expr in expr_list:
+                expr.evaluate(self.psstacks)
+        print(self.opstack_output[test_case])
+        self.assertEqual(len(self.psstacks.opstack),len(self.opstack_output[test_case]))
+        for i in range(0,len(self.opstack_output[test_case])):
+                self.assertTrue(self.compareObjectData(self.psstacks.opstack[i], self.opstack_output[test_case][i]))
 
 if __name__ == '__main__':
     unittest.main()
