@@ -2,7 +2,7 @@ import sys
 from psParser import read
 from psOperators import Operators
 from psItems import ArrayValue, Literal, Name, Array,Block
-from colors import *
+from colors import YELLOW,CEND,BOLD 
 
 testinput1 = """
     /x 4 def
@@ -78,8 +78,37 @@ testinput8 = """
     B
     """
 
+# ------------------------------ Additional TestCases ---------------------------------------#
+# Static op stack: 12
+# Dynamic op stack: 14
+testinput9 = """
+        /x 3 def
+        /a 9 def
+        /b {a x add stack} def
+        /c {/x 5 def b} def
+        c
+"""
 
-tests = [testinput1,testinput2,testinput3,testinput4,testinput5,testinput6,testinput7,testinput8]
+# Static op stack: [3 3 3 3]
+# Dynamic op stack: [5 5 5 5]
+testinput10 = """
+        /a [3 3 3 3] def
+        /b [1 2 3 4] def
+        /c {/b [4 3 2 1] def a stack} def
+        /d {/a [5 5 5 5] def c} def
+        d
+"""
+
+# Static op stack: True
+# Dynamic op stack: False
+testinput11 = """
+        /x {5 5 eq 2 2 eq eq} def
+        /y {x stack} def
+        /z {/x 5 6 eq def y} def
+        z
+"""
+
+tests = [testinput1,testinput2,testinput3,testinput4,testinput5,testinput6,testinput7,testinput8, testinput9, testinput10, testinput11]
 
 # program start
 if __name__ == '__main__':
@@ -89,13 +118,13 @@ if __name__ == '__main__':
     testnum = 1
     for testcase in tests:
         try:
-            print("\n-- TEST {} --".format(testnum))
+            print(BOLD+"\n-- TEST {} --".format(testnum)+CEND)
             expr_list = read(testcase)
-            print("\nSTATIC")
+            print(YELLOW + "\nSTATIC" +CEND)
             # interpret using static scoping rule
             for expr in expr_list:
                 expr.evaluate(psstacks_s)
-            print("\nDYNAMIC")
+            print(YELLOW + "\nDYNAMIC"+CEND)
             # interpret using dynamic scoping rule
             for expr in expr_list:
                 expr.evaluate(psstacks_d)    

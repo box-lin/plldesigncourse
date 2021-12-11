@@ -1,13 +1,14 @@
-from colors import BLUE, CEND, CYAN
+from colors import BLUE, CEND, CYAN, RED
 from psItems import Value, ArrayValue, FunctionValue
 '''
 Boxiang Lin
 '''
 class Operators:
-    def __init__(self):
+    def __init__(self, scoperule):
         #stack variables
         self.opstack = []  #assuming top of the stack is the end of the list
         self.dictstack = []  #assuming top of the stack is the end of the list
+        self.scope = scoperule
         
         #The builtin operators supported by our interpreter
         self.builtin_operators = {
@@ -21,8 +22,12 @@ class Operators:
              "length":self.length, "getinterval":self.getinterval, "putinterval":self.putinterval, "aload":self.aload, "astore":self.astore, 
              
              #Basic
-             "dup":self.dup, "exch":self.exch, "pop":self.pop, "copy":self.copy, "clear":self.clear, "roll":self.roll, "dict":self.psDict, "def":self.psDef,
-             "begin":self.begin, "end":self.end, "stack":self.stack, "count":self.count,
+             "dup":self.dup, "exch":self.exch, "pop":self.pop, "copy":self.copy, "clear":self.clear, "roll":self.roll, 
+            #  "dict":self.psDict,  #no useful in SSPS
+             "def":self.psDef,
+            #  "begin":self.begin, #no useful in SSPS
+            #  "end":self.end,  #no useful in SSPS
+             "stack":self.stack, "count":self.count,
              
              "if":self.psIf, "ifelse":self.psIfelse, 'repeat':self.repeat, 'forall':self.forall
              
@@ -54,7 +59,7 @@ class Operators:
     """
        Helper function. Pushes the given dictionary onto the dictstack. 
     """   
-    def dictPush(self,d):
+    def dictPush(self, d):
         self.dictstack.append(d)
 
     """
@@ -67,21 +72,40 @@ class Operators:
     """   
     def define(self,name, value):
         if len(self.dictstack) == 0:
-            self.dictPush({})
-        self.dictstack[-1][name] = value
+            tup = (0, {})
+            self.dictPush(tup)
+        self.dictstack[-1][1][name] = value
 
     """
        Helper function. Searches the dictstack for a variable or function and returns its value. 
        (Starts searching at the top of the opstack; if name is not found returns None and prints an error message.
         Make sure to add '/' to the begining of the name.)
     """
+    
+    def search_static_dict(self, name):
+        def dfs(idx):
+            if name in self.dictstack[idx][1]:
+                return self.dictstack[idx][1][name]
+            # if (i, {...}) and i == index of stack, connor case link doesnt move anymore and not found such pair yet, return None
+            elif self.dictstack[idx][0] == idx:
+                return None
+            else:
+                return dfs(self.dictstack[idx][0])
+        # return the value in a dict
+        return dfs(len(self.dictstack) - 1)
+    
     def lookup(self,name):
         the_name = '/' + name
-        for d in reversed(self.dictstack):
-            if the_name in d:
-                return d[the_name]
-        print("Error: no such name in dictionary stack")
+        if self.scope == 'static':
+            return self.search_static_dict(the_name)
+        elif self.scope == 'dynamic':
+            for tup in reversed(self.dictstack):
+                if the_name in tup[1]:
+                    return tup[1][the_name]
+        print("Error LookUp: no such name in dictionary stack")
         return None
+        
+        
     #------- Arithmetic Operators --------------
     
     """
@@ -274,11 +298,17 @@ class Operators:
        Prints the opstack. The end of the list is the top of the stack. 
     """
     def stack(self):
-        print(CYAN+ '<<--------- opstack --------->> ')
-        print(self.opstack, CEND)
-        print()
-        print(BLUE+'<<-------- dictstack -------->>')
-        print(self.dictstack, CEND)
+        print(CYAN+'===**opstack**==='+CEND)
+        for item in reversed(self.opstack):
+            print(item)
+        print(BLUE+'===**dictstack**==='+CEND)
+        index_dict = len(self.dictstack) - 1
+        for item in reversed(self.dictstack):
+            print('----', index_dict, '----', item[0], '----')
+            index_dict -= 1
+            for k, v in item[1].items():
+                print(k,"   ", v)
+        print(RED+'================='+CEND)
 
 
     """
@@ -397,7 +427,7 @@ class Operators:
         body = self.opPop()
         condition = self.opPop()
         if condition and isinstance(body, FunctionValue):
-            body.apply(self)
+            body.apply(self, len(self.dictstack)-1)
 
     """
        Implements ifelse operator. 
@@ -407,9 +437,9 @@ class Operators:
     def psIfelse(self):
         body2, body1, condition = self.opPop(), self.opPop(), self.opPop()
         if condition:
-            body1.apply(self)
+            body1.apply(self, len(self.dictstack)-1)
         elif not condition:
-            body2.apply(self)
+            body2.apply(self, len(self.dictstack)-1)
         else:
             print("need code array to perform computation")
 
@@ -424,7 +454,7 @@ class Operators:
     def repeat(self):
         body, count = self.opPop(), self.opPop()
         for i in range(count):
-            body.apply(self)
+            body.apply(self, len(self.dictstack)-1)
      
     """
        Implements forall operator.   
@@ -437,7 +467,7 @@ class Operators:
         arr = self.opPop().value
         for item in arr:
             self.opPush(item)
-            body.apply(self)
+            body.apply(self, len(self.dictstack)-1)
 
     #--- used in the setup of unittests 
     def clearBoth(self):

@@ -99,6 +99,15 @@ class Name(Expr):
         Expr.__init__(self, var_name)
         self.var_name = var_name
 
+    def get_static_idx(self, dictstack, fname):
+        name = '/' + fname
+        def dfs(name, idx):
+            if name in dictstack[idx][1]:
+                return idx
+            else: 
+                return dfs(name, dictstack[idx][0])
+        return dfs(name, len(dictstack) - 1)
+
     def evaluate(self,psstacks):
         if self.var_name[0] == '/':
             psstacks.opPush(str(self.var_name))
@@ -108,7 +117,8 @@ class Name(Expr):
             # val pair is function or others
             val_pair = psstacks.lookup(self.var_name)
             if isinstance(val_pair, FunctionValue):
-                val_pair.apply(psstacks)
+                static_idx = self.get_static_idx(psstacks.dictstack, self.var_name)  
+                val_pair.apply(psstacks, static_idx)
             else:
                 psstacks.opPush(val_pair)
             
@@ -204,9 +214,12 @@ class FunctionValue(Value):
         Value.__init__(self, body)
         self.body = body
 
-    def apply(self, psstacks):
+    def apply(self, psstacks, static_idx):
+        tup = (static_idx, {})
+        psstacks.dictPush(tup)
         for item in self.body:
             item.evaluate(psstacks)
+        psstacks.dictPop()
 
     def __str__(self):
         return '<function {}>'.format(self.body)
