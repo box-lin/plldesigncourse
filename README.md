@@ -1,6 +1,7 @@
-## Cpt_S 355 Programming Language Design
+## Programming Language Design Course
 
-Lecture by: Professor `Sakire Arslan Ay`
+
+Lecture by (Credit to) : Professor `Sakire Arslan Ay`
 
 #### Three main topics: 
 
